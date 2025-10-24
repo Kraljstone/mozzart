@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useScroll, useSpring } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { ReactNode, useEffect, useState } from 'react';
 
 interface ScrollProgressProviderProps {
@@ -79,19 +79,13 @@ export const ScrollProgress = ({
         }
     : undefined;
 
-  const { scrollYProgress } = useScroll(scrollOptions);
+  const { scrollYProgress } = useScroll(scrollOptions || {});
 
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 250,
-    damping: 40,
-    bounce: 0,
-  });
-
-  const scaleY = useSpring(scrollYProgress, {
-    stiffness: 250,
-    damping: 40,
-    bounce: 0,
-  });
+  // Use Framer Motion's useTransform for smooth animations
+  // Add fallback to prevent arity errors
+  const progressValue = scrollYProgress || 0;
+  const scaleX = useTransform(progressValue, [0, 1], [0, 1]);
+  const scaleY = useTransform(progressValue, [0, 1], [0, 1]);
 
   // Don't render until mounted to avoid hydration issues
   if (!isMounted) {

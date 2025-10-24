@@ -29,29 +29,29 @@ export const MatchFilters = ({
   };
 
   return (
-    <div className='bg-white rounded-lg border border-gray-200 p-4 mb-6'>
+    <div className='relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 mb-6 shadow-2xl before:absolute before:inset-0 before:rounded-xl before:p-[2px] before:bg-gradient-to-r before:from-yellow-500 before:via-red-500 before:to-pink-500 before:-z-10'>
       <div className='flex items-center justify-between mb-4'>
-        <h3 className='text-lg font-semibold text-gray-900'>
-          Filters & Search
+        <h3 className='text-xl font-bold bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500 bg-clip-text text-transparent'>
+          🎰 FILTERS & SEARCH 🎰
         </h3>
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className='flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors'
+          className='flex items-center gap-2 px-4 py-2 text-sm font-bold hover:cursor-pointer text-white bg-gradient-to-r from-yellow-500 to-red-600 rounded-lg hover:from-yellow-600 hover:to-red-700 transition-all duration-300 shadow-lg hover:shadow-yellow-500/25'
         >
           <Filter className='w-4 h-4' />
-          {isExpanded ? 'Hide' : 'Show'} Filters
+          {isExpanded ? '🎲 Hide' : '🎰 Show'} Filters
         </button>
       </div>
 
       {/* Search bar - always visible */}
       <div className='relative mb-4'>
-        <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400' />
+        <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-yellow-400' />
         <input
           type='text'
           placeholder='Search by team name...'
           value={filters.search || ''}
           onChange={(e) => handleFilterChange('search', e.target.value)}
-          className='w-full pl-10 pr-4 py-2 text-black border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+          className='w-full pl-10 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-all duration-300'
         />
       </div>
 
@@ -59,13 +59,13 @@ export const MatchFilters = ({
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
           {/* League Filter */}
           <div>
-            <label className='block text-sm font-medium text-gray-700 mb-1'>
-              League
+            <label className='block text-sm font-bold text-yellow-300 mb-2'>
+              🏆 League
             </label>
             <select
               value={filters.league || ''}
               onChange={(e) => handleFilterChange('league', e.target.value)}
-              className='w-full px-3 py-2 border text-black border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+              className='w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-all duration-300'
             >
               <option value=''>All Leagues</option>
               {availableLeagues.map((league) => (
@@ -78,13 +78,13 @@ export const MatchFilters = ({
 
           {/* Status Filter */}
           <div>
-            <label className='block text-sm font-medium text-gray-700 mb-1'>
-              Status
+            <label className='block text-sm font-bold text-yellow-300 mb-2'>
+              ⚡ Status
             </label>
             <select
               value={filters.status || ''}
               onChange={(e) => handleFilterChange('status', e.target.value)}
-              className='w-full px-3 py-2 border text-black border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+              className='w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-all duration-300'
             >
               <option value=''>All Status</option>
               <option value='upcoming'>Upcoming</option>
@@ -95,13 +95,13 @@ export const MatchFilters = ({
 
           {/* Sort By */}
           <div>
-            <label className='block text-sm font-medium text-gray-700 mb-1'>
-              Sort By
+            <label className='block text-sm font-bold text-yellow-300 mb-2'>
+              🔄 Sort By
             </label>
             <select
               value={filters.sortBy || ''}
               onChange={(e) => handleFilterChange('sortBy', e.target.value)}
-              className='w-full px-3 py-2 border text-black border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+              className='w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-all duration-300'
             >
               <option value=''>Default</option>
               <option value='time'>Time</option>
@@ -113,16 +113,16 @@ export const MatchFilters = ({
 
           {/* Sort Order */}
           <div>
-            <label className='block text-sm font-medium text-gray-700 mb-1'>
-              Order
+            <label className='block text-sm font-bold text-yellow-300 mb-2'>
+              📊 Order
             </label>
             <div className='flex gap-2'>
               <button
                 onClick={() => handleFilterChange('sortOrder', 'asc')}
-                className={`flex items-center gap-1 px-3 py-2 text-sm border rounded-md transition-colors ${
+                className={`flex items-center gap-1 px-3 py-2 text-sm border rounded-lg transition-all duration-300 ${
                   filters.sortOrder === 'asc'
-                    ? 'bg-blue-500 text-white border-blue-500'
-                    : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                    ? 'bg-gradient-to-r from-yellow-500 to-red-600 text-white border-yellow-500 shadow-lg'
+                    : 'bg-gray-700 text-gray-300 border-gray-600 hover:bg-gray-600'
                 }`}
               >
                 <SortAsc className='w-4 h-4' />
@@ -130,10 +130,10 @@ export const MatchFilters = ({
               </button>
               <button
                 onClick={() => handleFilterChange('sortOrder', 'desc')}
-                className={`flex items-center gap-1 px-3 py-2 text-sm border rounded-md transition-colors ${
+                className={`flex items-center gap-1 px-3 py-2 text-sm border rounded-lg transition-all duration-300 ${
                   filters.sortOrder === 'desc'
-                    ? 'bg-blue-500 text-white border-blue-500'
-                    : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                    ? 'bg-gradient-to-r from-yellow-500 to-red-600 text-white border-yellow-500 shadow-lg'
+                    : 'bg-gray-700 text-gray-300 border-gray-600 hover:bg-gray-600'
                 }`}
               >
                 <SortDesc className='w-4 h-4' />
@@ -148,9 +148,9 @@ export const MatchFilters = ({
       <div className='flex justify-end mt-4'>
         <button
           onClick={clearFilters}
-          className='px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors'
+          className='px-4 py-2 text-sm font-bold hover:cursor-pointer text-white bg-gradient-to-r from-red-500 to-pink-600 rounded-lg hover:from-red-600 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-red-500/25'
         >
-          Clear All Filters
+          🗑️ Clear All Filters
         </button>
       </div>
     </div>

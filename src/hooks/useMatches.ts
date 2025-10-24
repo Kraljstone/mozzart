@@ -171,7 +171,7 @@ export const useMatches = (username: string, filters: MatchFilters = {}) => {
     fetchMatches();
 
     // Set up polling as fallback (every 7 seconds)
-    const pollInterval = setInterval(fetchMatches, 70000);
+    const pollInterval = setInterval(fetchMatches, 700000);
 
     // Try to connect to socket for real-time updates
     connectSocket();
