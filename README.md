@@ -1,8 +1,40 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎰 Mozzart Sports Matches Application
 
-## Getting Started
+A real-time sports matches application built with Next.js, featuring live updates, visual highlighting, filtering, search, and a casino-themed UI.
 
-First, run the development server:
+## 🚀 Installation Instructions
+
+### Prerequisites
+
+- Node.js 18+
+- npm, yarn, pnpm, or bun
+
+### Step 1: Clone the Repository
+
+```bash
+git clone <repository-url>
+cd mozzart
+```
+
+### Step 2: Install Dependencies
+
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
+
+### Step 3: Environment Setup
+
+Create a `.env.local` file in the root directory:
+
+```bash
+NEXT_PUBLIC_API_URL=http://172.235.235.11
+```
+
+### Step 4: Run the Development Server
 
 ```bash
 npm run dev
@@ -14,24 +46,108 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Step 5: Open the Application
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🏃‍♂️ Running Instructions
 
-## Learn More
+1. **Start the Application**: Run `npm run dev` in the terminal
+2. **Login**: Enter your email address in the login form
+3. **View Matches**: Browse live sports matches with real-time updates
+4. **Filter & Search**: Use the filter panel to find specific matches
+5. **Favorites**: Click the heart icon to mark matches as favorites
+6. **Real-time Updates**: Watch for new matches (green highlight) and removed matches (red highlight)
 
-To learn more about Next.js, take a look at the following resources:
+## 📚 Lista korišćenih biblioteka i zašto ste ih odabrali
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Core Framework
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Next.js 16.0.0** - Modern React framework with App Router, Server Components, and excellent performance
+- **React 19.2.0** - Latest React with improved concurrent features and better performance
+- **TypeScript 5.9.3** - Type safety and better developer experience
 
-## Deploy on Vercel
+### Styling & UI
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Tailwind CSS 4.1.16** - Utility-first CSS framework for rapid UI development
+- **Lucide React 0.547.0** - Beautiful, customizable SVG icons
+- **Framer Motion 12.23.24** - Advanced animations and scroll progress indicators
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# mozzart_test
+### Data & API
+
+- **Axios 1.12.2** - HTTP client for API requests with timeout and error handling
+- **Socket.io Client 4.8.1** - Real-time WebSocket communication for live updates
+
+### Utilities
+
+- **clsx 2.1.1** - Conditional className utility for dynamic styling
+
+### Development Tools
+
+- **ESLint 9.38.0** - Code linting and quality assurance
+- **@types/node, @types/react, @types/react-dom** - TypeScript type definitions
+
+## 🎯 Zašto su odabrane ove biblioteke?
+
+### **Next.js** - Izabran zbog:
+
+- Server-side rendering (SSR) za bolje SEO
+- App Router za modernu arhitekturu
+- Built-in optimizacije performansi
+- Excellent developer experience
+
+### **Tailwind CSS** - Izabran zbog:
+
+- Brzina razvoja UI komponenti
+- Konsistentan design system
+- Responsive design out-of-the-box
+- Utility-first pristup za fleksibilnost
+
+### **Framer Motion** - Izabran zbog:
+
+- Smooth animacije za scroll progress
+- Professional hover effects
+- Performance optimizovane animacije
+- Declarative animation API
+
+### **Socket.io** - Izabran zbog:
+
+- Real-time komunikacija
+- Automatic fallback na polling
+- Robust error handling
+- Cross-browser kompatibilnost
+
+### **TypeScript** - Izabran zbog:
+
+- Type safety za manje bugova
+- Better IDE support
+- Self-documenting code
+- Easier refactoring
+
+## 🎰 Features
+
+- ✅ **Real-time Updates** - Live match data with visual highlighting
+- ✅ **Authentication** - Email-based login with localStorage persistence
+- ✅ **Filtering & Search** - Filter by league, status, team name
+- ✅ **Favorites System** - Mark and filter favorite matches
+- ✅ **Responsive Design** - Works on all device sizes
+- ✅ **Performance Optimized** - Virtual scrolling and memoization
+- ✅ **Casino Theme** - Dark, gambling-themed UI with neon colors
+- ✅ **Error Handling** - Comprehensive error states and retry mechanisms
+
+## 🚀 Production Deployment
+
+The easiest way to deploy is using [Vercel Platform](https://vercel.com/new):
+
+1. Push your code to GitHub
+2. Connect your repository to Vercel
+3. Set environment variables in Vercel dashboard
+4. Deploy automatically
+
+## 📝 Development Notes
+
+- Uses Next.js App Router with parallel routes for authentication
+- Implements custom hooks for data management
+- Features comprehensive error handling and loading states
+- Optimized for performance with React.memo and useCallback
+- Zero setTimeout usage for better performance
