@@ -69,3 +69,41 @@ body {
   border-radius: 0 4px 4px 0;
   box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
 }
+
+/* Custom Casino-Themed Scrollbar */
+.casino-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #fbbf24 #374151;
+}
+
+.casino-scrollbar::-webkit-scrollbar {
+  width: 12px;
+}
+
+.casino-scrollbar::-webkit-scrollbar-track {
+  background: linear-gradient(180deg, #1f2937, #111827);
+  border-radius: 10px;
+  border: 1px solid #374151;
+}
+
+.casino-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #fbbf24, #f59e0b);
+  border-radius: 10px;
+  border: 2px solid #1f2937;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.casino-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #f59e0b, #d97706);
+  box-shadow: 0 4px 8px rgba(251, 191, 36, 0.4);
+}
+
+.casino-scrollbar::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(180deg, #d97706, #b45309);
+}
+
+/* Smooth scrolling */
+.smooth-scroll {
+  scroll-behavior: smooth;
+  scroll-padding-top: 20px;
+}

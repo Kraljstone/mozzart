@@ -23,6 +23,15 @@ export interface MatchFilters {
   status?: string;
   sortBy?: 'time' | 'league' | 'alphabetical' | 'result';
   sortOrder?: 'asc' | 'desc';
+  favoritesOnly?: boolean;
+}
+
+export interface FavoritesState {
+  favoriteMatches: Set<string>;
+  addFavorite: (matchId: string) => void;
+  removeFavorite: (matchId: string) => void;
+  isFavorite: (matchId: string) => boolean;
+  toggleFavorite: (matchId: string) => void;
 }
 
 export interface MatchState {
@@ -32,4 +41,7 @@ export interface MatchState {
   lastUpdated: string | null;
   newMatches: Set<string>;
   removedMatches: Set<string>;
+  clearIndicatorsAt?: number;
+  retryAt?: number;
+  shouldRetry?: boolean;
 }

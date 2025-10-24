@@ -1,10 +1,10 @@
 'use client';
 
 import { Match } from '@/types/match';
-import { Clock, MapPin, Users, Trophy, DollarSign } from 'lucide-react';
+import { Clock, MapPin, Users, Trophy, DollarSign, Heart } from 'lucide-react';
 import { clsx } from 'clsx';
-// Removed React Spring imports
-import { useState } from 'react';
+import { useFavorites } from '@/contexts/FavoritesContext';
+import { useState, memo } from 'react';
 
 interface MatchCardProps {
   match: Match;
@@ -12,8 +12,9 @@ interface MatchCardProps {
   isRemoved?: boolean;
 }
 
-export const MatchCard = ({ match, isNew, isRemoved }: MatchCardProps) => {
+export const MatchCard = memo(({ match, isNew, isRemoved }: MatchCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
+  const { isFavorite, toggleFavorite } = useFavorites();
 
   // Removed React Spring animations
 
@@ -113,14 +114,35 @@ export const MatchCard = ({ match, isNew, isRemoved }: MatchCardProps) => {
                 {match.league}
               </span>
             </div>
-            <span
-              className={clsx(
-                'px-2 py-1 text-xs font-bold rounded-full border',
-                getStatusColor(match.status)
-              )}
-            >
-              {getStatusText(match.status)}
-            </span>
+            <div className='flex items-center gap-2'>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleFavorite(match.id);
+                }}
+                className={clsx(
+                  'p-1 rounded-full transition-all duration-300 hover:scale-110',
+                  isFavorite(match.id)
+                    ? 'text-red-500 hover:text-red-400'
+                    : 'text-gray-400 hover:text-red-500'
+                )}
+              >
+                <Heart
+                  className={clsx(
+                    'w-5 h-5',
+                    isFavorite(match.id) ? 'fill-current' : ''
+                  )}
+                />
+              </button>
+              <span
+                className={clsx(
+                  'px-2 py-1 text-xs font-bold rounded-full border',
+                  getStatusColor(match.status)
+                )}
+              >
+                {getStatusText(match.status)}
+              </span>
+            </div>
           </div>
 
           {/* Teams and Score */}
@@ -226,4 +248,6 @@ export const MatchCard = ({ match, isNew, isRemoved }: MatchCardProps) => {
       </div>
     </div>
   );
-};
+});
+
+MatchCard.displayName = 'MatchCard';

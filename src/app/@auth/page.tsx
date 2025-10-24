@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import { useState, useEffect, useLayoutEffect } from 'react';
 
 export default function AuthPage() {
   const [inputValue, setInputValue] = useState('');
@@ -10,30 +10,26 @@ export default function AuthPage() {
 
   // Handle hydration safely
   useLayoutEffect(() => {
-    const timer = setTimeout(() => {
-      setIsMounted(true);
+    setIsMounted(true);
 
-      const savedUsername = localStorage.getItem('mozzart_username');
-      const savedTimestamp = localStorage.getItem('mozzart_username_timestamp');
+    const savedUsername = localStorage.getItem('mozzart_username');
+    const savedTimestamp = localStorage.getItem('mozzart_username_timestamp');
 
-      if (savedUsername && savedTimestamp) {
-        const now = Date.now();
-        const savedTime = parseInt(savedTimestamp);
-        const oneDayInMs = 24 * 60 * 60 * 1000; // 1 day in milliseconds
+    if (savedUsername && savedTimestamp) {
+      const now = Date.now();
+      const savedTime = parseInt(savedTimestamp);
+      const oneDayInMs = 24 * 60 * 60 * 1000; // 1 day in milliseconds
 
-        // Check if saved data is less than 1 day old
-        if (now - savedTime < oneDayInMs) {
-          setInputValue(savedUsername);
-          setValidatedUsername(savedUsername);
-        } else {
-          // Clear expired data
-          localStorage.removeItem('mozzart_username');
-          localStorage.removeItem('mozzart_username_timestamp');
-        }
+      // Check if saved data is less than 1 day old
+      if (now - savedTime < oneDayInMs) {
+        setInputValue(savedUsername);
+        setValidatedUsername(savedUsername);
+      } else {
+        // Clear expired data
+        localStorage.removeItem('mozzart_username');
+        localStorage.removeItem('mozzart_username_timestamp');
       }
-    }, 0);
-
-    return () => clearTimeout(timer);
+    }
   }, []);
 
   // Listen for logout events
@@ -87,13 +83,6 @@ export default function AuthPage() {
     } finally {
       setIsLoggingIn(false);
     }
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('mozzart_username');
-    localStorage.removeItem('mozzart_username_timestamp');
-    setInputValue('');
-    setValidatedUsername('');
   };
 
   // Don't render until mounted to prevent hydration issues

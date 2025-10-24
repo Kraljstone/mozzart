@@ -93,6 +93,30 @@ export const MatchFilters = ({
             </select>
           </div>
 
+          {/* Favorites Filter */}
+          <div>
+            <label className='block text-sm font-bold text-yellow-300 mb-2'>
+              ❤️ Favorites
+            </label>
+            <div className='flex items-center gap-2'>
+              <input
+                type='checkbox'
+                id='favoritesOnly'
+                checked={filters.favoritesOnly || false}
+                onChange={(e) =>
+                  handleFilterChange(
+                    'favoritesOnly',
+                    e.target.checked ? 'true' : ''
+                  )
+                }
+                className='w-4 h-4 text-yellow-500 bg-gray-700 border-gray-600 rounded focus:ring-yellow-500 focus:ring-2'
+              />
+              <label htmlFor='favoritesOnly' className='text-sm text-gray-300'>
+                Show favorites only
+              </label>
+            </div>
+          </div>
+
           {/* Sort By */}
           <div>
             <label className='block text-sm font-bold text-yellow-300 mb-2'>

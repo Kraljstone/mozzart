@@ -59,10 +59,7 @@ export const ScrollProgress = ({
 
   // Handle hydration with proper timing
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsMounted(true);
-    }, 0);
-    return () => clearTimeout(timer);
+    setIsMounted(true);
   }, []);
 
   // For global scroll, don't use a target
@@ -122,10 +119,7 @@ export const ScrollProgressContainer = ({
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsMounted(true);
-    }, 0);
-    return () => clearTimeout(timer);
+    setIsMounted(true);
   }, []);
 
   if (asChild) {

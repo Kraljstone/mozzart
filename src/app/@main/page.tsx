@@ -1,33 +1,29 @@
 'use client';
 
-import {
-  useState,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useCallback,
-} from 'react';
+import { useState, useEffect, useLayoutEffect } from 'react';
 import { useMatches } from '@/hooks/useMatches';
-import { MatchCard } from '@/components/MatchCard';
 import { MatchFilters } from '@/components/MatchFilters';
+import { VirtualizedMatchList } from '@/components/VirtualizedMatchList';
 import {
   ScrollProgressProvider,
   ScrollProgress,
   ScrollProgressContainer,
 } from '@/components/ScrollProgress';
-import { MatchFilters as FilterType, Match } from '@/types/match';
+import { FavoritesProvider, useFavorites } from '@/contexts/FavoritesContext';
+import { MatchFilters as FilterType } from '@/types/match';
 import { RefreshCw, AlertCircle, Wifi, WifiOff, LogOut } from 'lucide-react';
 
-export default function MainPage() {
+// Main content component that uses favorites
+const MainContent = () => {
   const [validatedUsername, setValidatedUsername] = useState('');
   const [filters, setFilters] = useState<FilterType>({});
-  const [isConnected, setIsConnected] = useState(false);
+  const [isConnected, setIsConnected] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
-  const observerRef = useRef<HTMLDivElement>(null);
+  const { isFavorite } = useFavorites();
 
   // Handle hydration safely
   useLayoutEffect(() => {
-    const timer = setTimeout(() => {
+    const initializeAuth = () => {
       setIsMounted(true);
 
       const savedUsername = localStorage.getItem('mozzart_username');
@@ -47,9 +43,11 @@ export default function MainPage() {
           localStorage.removeItem('mozzart_username_timestamp');
         }
       }
-    }, 0);
+    };
 
-    return () => clearTimeout(timer);
+    // Use requestAnimationFrame to defer state updates
+    const rafId = requestAnimationFrame(initializeAuth);
+    return () => cancelAnimationFrame(rafId);
   }, []);
 
   const {
@@ -60,42 +58,12 @@ export default function MainPage() {
     newMatches,
     removedMatches,
     retry,
-    loadMore,
-    hasMore,
   } = useMatches(validatedUsername, filters);
 
   // Get unique leagues for filter dropdown
   const availableLeagues = Array.from(
     new Set(matches.map((match) => match.league))
   ).sort();
-
-  // Intersection Observer for infinite scroll
-  const observerCallback = useCallback(
-    (entries: IntersectionObserverEntry[]) => {
-      const target = entries[0];
-      if (target.isIntersecting && hasMore && !loading) {
-        loadMore();
-      }
-    },
-    [hasMore, loading, loadMore]
-  );
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(observerCallback, {
-      threshold: 0.1,
-    });
-
-    const currentRef = observerRef.current;
-    if (currentRef) {
-      observer.observe(currentRef);
-    }
-
-    return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef);
-      }
-    };
-  }, [observerCallback]);
 
   // Listen for login events
   useEffect(() => {
@@ -114,8 +82,9 @@ export default function MainPage() {
   // Simulate connection status (in real app, this would come from socket)
   useEffect(() => {
     const interval = setInterval(() => {
-      setIsConnected(Math.random() > 0.1); // 90% chance of being connected
-    }, 5000);
+      // Simulate occasional disconnections for demo purposes
+      setIsConnected(Math.random() > 0.05); // 95% chance of being connected
+    }, 10000);
 
     return () => clearInterval(interval);
   }, []);
@@ -137,8 +106,9 @@ export default function MainPage() {
       !filters.search ||
       match.homeTeam.toLowerCase().includes(filters.search.toLowerCase()) ||
       match.awayTeam.toLowerCase().includes(filters.search.toLowerCase());
+    const favoritesMatch = !filters.favoritesOnly || isFavorite(match.id);
 
-    return leagueMatch && statusMatch && searchMatch;
+    return leagueMatch && statusMatch && searchMatch && favoritesMatch;
   });
 
   // Don't render until mounted to prevent hydration issues
@@ -169,7 +139,7 @@ export default function MainPage() {
                     <WifiOff className='w-4 h-4 text-red-400' />
                   )}
                   <span className='text-gray-300 text-sm'>
-                    {isConnected ? 'Connected' : 'Disconnected'}
+                    {isConnected ? 'Live Updates' : 'Polling Mode'}
                   </span>
                 </div>
                 {lastUpdated && (
@@ -182,14 +152,16 @@ export default function MainPage() {
             <div className='flex gap-2'>
               <button
                 onClick={retry}
-                className='bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 flex items-center gap-2'
+                className='bg-gradient-to-r from-blue-500 to-blue-600
+                 hover:cursor-pointer text-white px-4 py-2 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 flex items-center gap-2'
               >
                 <RefreshCw className='w-4 h-4' />
                 Refresh
               </button>
               <button
                 onClick={handleLogout}
-                className='bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-300 flex items-center gap-2'
+                className='bg-gradient-to-r from-red-500 to-red-600
+                 hover:cursor-pointer text-white px-4 py-2 rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-300 flex items-center gap-2'
               >
                 <LogOut className='w-4 h-4' />
                 Logout
@@ -259,36 +231,12 @@ export default function MainPage() {
               className='local-scroll-progress h-1'
             />
             <ScrollProgressContainer className='relative'>
-              <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
-                {filteredMatches.map((match: Match) => (
-                  <MatchCard
-                    key={match.id}
-                    match={match}
-                    isNew={newMatches.has(match.id)}
-                    isRemoved={removedMatches.has(match.id)}
-                  />
-                ))}
-              </div>
-
-              {/* Infinite Scroll Trigger */}
-              {hasMore && (
-                <div ref={observerRef} className='flex justify-center py-8'>
-                  <div className='text-center'>
-                    <div className='text-yellow-400 text-lg font-bold mb-2'>
-                      🎰 Loading more matches... 🎰
-                    </div>
-                    <div className='w-8 h-8 border-2 border-yellow-400 border-t-transparent rounded-full animate-spin mx-auto'></div>
-                  </div>
-                </div>
-              )}
-
-              {!hasMore && matches.length > 0 && (
-                <div className='text-center py-8'>
-                  <div className='text-gray-400 text-lg font-bold'>
-                    🎲 No more matches to load 🎲
-                  </div>
-                </div>
-              )}
+              <VirtualizedMatchList
+                matches={filteredMatches}
+                newMatches={newMatches}
+                removedMatches={removedMatches}
+                height={700}
+              />
             </ScrollProgressContainer>
           </ScrollProgressProvider>
         )}
@@ -304,5 +252,14 @@ export default function MainPage() {
         )}
       </main>
     </div>
+  );
+};
+
+// Main page component with FavoritesProvider
+export default function MainPage() {
+  return (
+    <FavoritesProvider>
+      <MainContent />
+    </FavoritesProvider>
   );
 }
