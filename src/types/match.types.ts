@@ -19,6 +19,8 @@ export interface MatchListResponse {
 
 export interface MatchFilters {
   league?: string;
+  competition?: string;
+  venue?: string;
   search?: string;
   status?: string;
   sortBy?: 'time' | 'league' | 'alphabetical' | 'result';
@@ -62,4 +64,20 @@ export interface MatchFiltersProps {
   filters: MatchFilters;
   onFiltersChange: (filters: Partial<MatchFilters>) => void;
   availableLeagues: string[];
+  availableCompetitions: string[];
+  availableVenues: string[];
+  availableStatuses: string[];
+}
+
+export interface DropdownOption {
+  value: string;
+  label: string;
+}
+
+export interface CustomDropdownProps {
+  options: DropdownOption[];
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  className?: string;
 }

@@ -46,9 +46,24 @@ const MainContent = () => {
     retry,
   } = useMatches(validatedUsername, filters);
 
-  // Get unique leagues for filter dropdown
   const availableLeagues = Array.from(
     new Set(matches.map((match) => match.league))
+  ).sort();
+
+  const availableCompetitions = Array.from(
+    new Set(matches.map((match) => match.competition))
+  ).sort();
+
+  const availableVenues = Array.from(
+    new Set(
+      matches
+        .map((match) => match.venue)
+        .filter((venue): venue is string => Boolean(venue))
+    )
+  ).sort();
+
+  const availableStatuses = Array.from(
+    new Set(matches.map((match) => match.status))
   ).sort();
 
   // Listen for login events
@@ -83,6 +98,9 @@ const MainContent = () => {
   // Filter matches based on current filters
   const filteredMatches = matches.filter((match) => {
     const leagueMatch = !filters.league || match.league === filters.league;
+    const competitionMatch =
+      !filters.competition || match.competition === filters.competition;
+    const venueMatch = !filters.venue || match.venue === filters.venue;
     const statusMatch = !filters.status || match.status === filters.status;
     const searchMatch =
       !filters.search ||
@@ -90,7 +108,14 @@ const MainContent = () => {
       match.awayTeam.toLowerCase().includes(filters.search.toLowerCase());
     const favoritesMatch = !filters.favoritesOnly || isFavorite(match.id);
 
-    return leagueMatch && statusMatch && searchMatch && favoritesMatch;
+    return (
+      leagueMatch &&
+      competitionMatch &&
+      venueMatch &&
+      statusMatch &&
+      searchMatch &&
+      favoritesMatch
+    );
   });
 
   // Don't render until mounted to prevent hydration issues
@@ -117,6 +142,9 @@ const MainContent = () => {
           filters={filters}
           onFiltersChange={setFilters}
           availableLeagues={availableLeagues}
+          availableCompetitions={availableCompetitions}
+          availableVenues={availableVenues}
+          availableStatuses={availableStatuses}
         />
 
         {error && <ErrorState error={error} onRetry={retry} />}

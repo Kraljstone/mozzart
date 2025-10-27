@@ -3,11 +3,15 @@
 import { useState } from 'react';
 import { Search, Filter, SortAsc, SortDesc } from 'lucide-react';
 import { MatchFiltersProps } from '@/types/match.types';
+import { CustomDropdown } from './CustomDropdown';
 
 export const MatchFilters = ({
   filters,
   onFiltersChange,
   availableLeagues,
+  availableCompetitions,
+  availableVenues,
+  availableStatuses,
 }: MatchFiltersProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -24,6 +28,41 @@ export const MatchFilters = ({
   const clearFilters = () => {
     onFiltersChange({});
   };
+
+  // Dropdown options - dynamically generated from API data
+  const leagueOptions = [
+    { value: '', label: 'All Leagues' },
+    ...availableLeagues.map((league) => ({ value: league, label: league })),
+  ];
+
+  const competitionOptions = [
+    { value: '', label: 'All Competitions' },
+    ...availableCompetitions.map((competition) => ({
+      value: competition,
+      label: competition,
+    })),
+  ];
+
+  const venueOptions = [
+    { value: '', label: 'All Venues' },
+    ...availableVenues.map((venue) => ({ value: venue, label: venue })),
+  ];
+
+  const statusOptions = [
+    { value: '', label: 'All Status' },
+    ...availableStatuses.map((status) => ({
+      value: status,
+      label: status.charAt(0).toUpperCase() + status.slice(1),
+    })),
+  ];
+
+  const sortByOptions = [
+    { value: '', label: 'Default' },
+    { value: 'time', label: 'Time' },
+    { value: 'league', label: 'League' },
+    { value: 'alphabetical', label: 'Alphabetical' },
+    { value: 'result', label: 'Result' },
+  ];
 
   return (
     <div className='relative bg-linear-to-br from-gray-800 to-gray-900 rounded-xl p-6 mb-6 shadow-2xl before:absolute before:inset-0 before:rounded-xl before:p-[2px] before:bg-linear-to-r before:from-yellow-500 before:via-red-500 before:to-pink-500 before:-z-10'>
@@ -58,29 +97,53 @@ export const MatchFilters = ({
       </div>
 
       {isExpanded && (
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4'>
           {/* League Filter */}
           <div>
             <label className='block text-sm font-bold text-yellow-300 mb-2'>
               🏆 League
             </label>
-            <select
+            <CustomDropdown
+              options={leagueOptions}
               value={filters.league || ''}
-              onChange={(e) =>
+              onChange={(value) =>
+                handleFilterChange('league' as keyof MatchFiltersProps, value)
+              }
+              placeholder='All Leagues'
+            />
+          </div>
+
+          {/* Competition Filter */}
+          <div>
+            <label className='block text-sm font-bold text-yellow-300 mb-2'>
+              🏟️ Competition
+            </label>
+            <CustomDropdown
+              options={competitionOptions}
+              value={filters.competition || ''}
+              onChange={(value) =>
                 handleFilterChange(
-                  'league' as keyof MatchFiltersProps,
-                  e.target.value
+                  'competition' as keyof MatchFiltersProps,
+                  value
                 )
               }
-              className='w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-all duration-300'
-            >
-              <option value=''>All Leagues</option>
-              {availableLeagues.map((league) => (
-                <option key={league} value={league}>
-                  {league}
-                </option>
-              ))}
-            </select>
+              placeholder='All Competitions'
+            />
+          </div>
+
+          {/* Venue Filter */}
+          <div>
+            <label className='block text-sm font-bold text-yellow-300 mb-2'>
+              📍 Venue
+            </label>
+            <CustomDropdown
+              options={venueOptions}
+              value={filters.venue || ''}
+              onChange={(value) =>
+                handleFilterChange('venue' as keyof MatchFiltersProps, value)
+              }
+              placeholder='All Venues'
+            />
           </div>
 
           {/* Status Filter */}
@@ -88,21 +151,14 @@ export const MatchFilters = ({
             <label className='block text-sm font-bold text-yellow-300 mb-2'>
               ⚡ Status
             </label>
-            <select
+            <CustomDropdown
+              options={statusOptions}
               value={filters.status || ''}
-              onChange={(e) =>
-                handleFilterChange(
-                  'status' as keyof MatchFiltersProps,
-                  e.target.value
-                )
+              onChange={(value) =>
+                handleFilterChange('status' as keyof MatchFiltersProps, value)
               }
-              className='w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-all duration-300'
-            >
-              <option value=''>All Status</option>
-              <option value='upcoming'>Upcoming</option>
-              <option value='live'>Live</option>
-              <option value='finished'>Finished</option>
-            </select>
+              placeholder='All Status'
+            />
           </div>
 
           {/* Favorites Filter */}
@@ -134,22 +190,14 @@ export const MatchFilters = ({
             <label className='block text-sm font-bold text-yellow-300 mb-2'>
               🔄 Sort By
             </label>
-            <select
+            <CustomDropdown
+              options={sortByOptions}
               value={filters.sortBy || ''}
-              onChange={(e) =>
-                handleFilterChange(
-                  'sortBy' as keyof MatchFiltersProps,
-                  e.target.value
-                )
+              onChange={(value) =>
+                handleFilterChange('sortBy' as keyof MatchFiltersProps, value)
               }
-              className='w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-all duration-300'
-            >
-              <option value=''>Default</option>
-              <option value='time'>Time</option>
-              <option value='league'>League</option>
-              <option value='alphabetical'>Alphabetical</option>
-              <option value='result'>Result</option>
-            </select>
+              placeholder='Default'
+            />
           </div>
 
           {/* Sort Order */}
