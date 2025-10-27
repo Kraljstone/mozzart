@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Match, MatchState, MatchFilters } from '@/types/match';
+import { Match, MatchState, MatchFilters } from '@/types/match.types';
 import { io, Socket } from 'socket.io-client';
+import { apiService } from '@/services/api';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
@@ -57,7 +58,6 @@ export const useMatches = (username: string, filters: MatchFilters = {}) => {
     }
   }, [state.clearIndicatorsAt]);
 
-  // Handle retry mechanism without setTimeout
   useEffect(() => {
     if (state.retryAt) {
       const now = Date.now();
@@ -117,21 +117,18 @@ export const useMatches = (username: string, filters: MatchFilters = {}) => {
       if (filters.sortOrder) params.append('sortOrder', filters.sortOrder);
 
       const queryString = params.toString();
-      const url = queryString ? `/api/matches?${queryString}` : '/api/matches';
+      const endpoint = queryString
+        ? `/api/matches?${queryString}`
+        : '/api/matches';
 
-      const response = await fetch(url, {
-        headers: {
-          'Content-Type': 'application/json',
-          username: username,
-        },
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || `HTTP ${response.status}`);
-      }
-
-      const data = await response.json();
+      const data = await apiService.get<Match[] | { matches: Match[] }>(
+        endpoint,
+        {
+          headers: {
+            username: username,
+          },
+        }
+      );
       const newMatches = Array.isArray(data) ? data : data.matches || [];
 
       setState((prev) => {
@@ -218,7 +215,7 @@ export const useMatches = (username: string, filters: MatchFilters = {}) => {
       socketRef.current = io(API_BASE_URL, {
         auth: { username },
         transports: ['websocket', 'polling'],
-        timeout: 10000, // Reduced timeout
+        timeout: 10000,
         forceNew: true,
         autoConnect: true,
         reconnection: true,
@@ -312,7 +309,6 @@ export const useMatches = (username: string, filters: MatchFilters = {}) => {
   useEffect(() => {
     if (!username) return;
 
-    // Initial fetch
     fetchMatches();
 
     // Set up polling as fallback (every 15 seconds)

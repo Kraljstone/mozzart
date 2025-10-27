@@ -1,22 +1,16 @@
 'use client';
 
-import { Match } from '@/types/match';
+import { MatchCardProps } from '@/types/match.types';
 import { Clock, MapPin, Users, Trophy, DollarSign, Heart } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useFavorites } from '@/contexts/FavoritesContext';
-import { useState, memo } from 'react';
-
-interface MatchCardProps {
-  match: Match;
-  isNew?: boolean;
-  isRemoved?: boolean;
-}
+import { useState, memo, useRef } from 'react';
 
 export const MatchCard = memo(({ match, isNew, isRemoved }: MatchCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [isInHeader, setIsInHeader] = useState(false);
   const { isFavorite, toggleFavorite } = useFavorites();
-
-  // Removed React Spring animations
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const formatTime = (timeString: string) => {
     const date = new Date(timeString);
@@ -60,8 +54,24 @@ export const MatchCard = memo(({ match, isNew, isRemoved }: MatchCardProps) => {
   return (
     <div
       className='relative w-full h-80 perspective-1000'
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={() => {
+        if (!isInHeader) {
+          if (hoverTimeoutRef.current) {
+            clearTimeout(hoverTimeoutRef.current);
+          }
+          hoverTimeoutRef.current = setTimeout(() => {
+            setIsHovered(true);
+          }, 250);
+        }
+      }}
+      onMouseLeave={() => {
+        // Clear timeout and immediately hide
+        if (hoverTimeoutRef.current) {
+          clearTimeout(hoverTimeoutRef.current);
+        }
+        setIsHovered(false);
+        setIsInHeader(false);
+      }}
     >
       <div
         className={clsx(
@@ -72,11 +82,11 @@ export const MatchCard = memo(({ match, isNew, isRemoved }: MatchCardProps) => {
         {/* Front of card */}
         <div
           className={clsx(
-            'absolute inset-0 w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl border-2 p-6 shadow-2xl backface-hidden',
+            'absolute inset-0 w-full h-full bg-linear-to-br from-gray-800 to-gray-900 rounded-xl border-2 p-6 shadow-2xl backface-hidden',
             {
-              'border-green-400 bg-gradient-to-br from-green-900/50 to-green-800/50 animate-pulse shadow-green-500/25':
+              'border-green-400 bg-linear-to-br from-green-900/50 to-green-800/50 animate-pulse shadow-green-500/25':
                 isNew,
-              'border-red-400 bg-gradient-to-br from-red-900/50 to-red-800/50 opacity-50':
+              'border-red-400 bg-linear-to-br from-red-900/50 to-red-800/50 opacity-50':
                 isRemoved,
               'border-gray-600': !isNew && !isRemoved,
             }
@@ -88,9 +98,9 @@ export const MatchCard = memo(({ match, isNew, isRemoved }: MatchCardProps) => {
               className={clsx(
                 'absolute -top-2 -right-2 px-3 py-1 text-xs font-bold rounded-full text-white shadow-lg',
                 {
-                  'bg-gradient-to-r from-green-500 to-green-600 animate-bounce shadow-green-500/50':
+                  'bg-linear-to-br from-green-500 to-green-600 animate-bounce shadow-green-500/50':
                     isNew,
-                  'bg-gradient-to-r from-red-500 to-red-600 shadow-red-500/50':
+                  'bg-linear-to-br from-red-500 to-red-600 shadow-red-500/50':
                     isRemoved,
                 }
               )}
@@ -101,13 +111,26 @@ export const MatchCard = memo(({ match, isNew, isRemoved }: MatchCardProps) => {
 
           {/* Click indicator */}
           <div className='absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
-            <div className='bg-gradient-to-r from-yellow-500 to-red-500 text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg'>
+            <div className='bg-linear-to-br from-yellow-500 to-red-500 text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg'>
               🎲 CLICK TO BET
             </div>
           </div>
 
           {/* Header with league and status */}
-          <div className='flex justify-between items-center mb-3'>
+          <div
+            className='flex justify-between items-center mb-3'
+            onMouseEnter={() => {
+              setIsInHeader(true);
+              // Clear timeout to prevent flip
+              if (hoverTimeoutRef.current) {
+                clearTimeout(hoverTimeoutRef.current);
+              }
+              setIsHovered(false);
+            }}
+            onMouseLeave={() => {
+              setIsInHeader(false);
+            }}
+          >
             <div className='flex items-center gap-2'>
               <Trophy className='w-5 h-5 text-yellow-400' />
               <span className='text-sm font-bold text-yellow-300'>
@@ -121,7 +144,7 @@ export const MatchCard = memo(({ match, isNew, isRemoved }: MatchCardProps) => {
                   toggleFavorite(match.id);
                 }}
                 className={clsx(
-                  'p-1 rounded-full transition-all duration-300 hover:scale-110',
+                  'p-1 rounded-full transition-all duration-300 hover:scale-110 hover:cursor-pointer',
                   isFavorite(match.id)
                     ? 'text-red-500 hover:text-red-400'
                     : 'text-gray-400 hover:text-red-500'
@@ -146,7 +169,13 @@ export const MatchCard = memo(({ match, isNew, isRemoved }: MatchCardProps) => {
           </div>
 
           {/* Teams and Score */}
-          <div className='space-y-2'>
+          <div
+            className='space-y-2'
+            onMouseEnter={() => {
+              setIsInHeader(false);
+              setIsHovered(true);
+            }}
+          >
             <div className='flex justify-between items-center'>
               <span className='font-bold text-white text-lg'>
                 {match.homeTeam}
@@ -167,17 +196,23 @@ export const MatchCard = memo(({ match, isNew, isRemoved }: MatchCardProps) => {
           </div>
 
           {/* Match details */}
-          <div className='mt-4 pt-3 border-t border-gray-600'>
+          <div
+            className='mt-4 pt-3 border-t border-gray-600'
+            onMouseEnter={() => {
+              setIsInHeader(false);
+              setIsHovered(true);
+            }}
+          >
             <div className='flex items-center justify-between text-sm text-gray-300'>
               <div className='flex items-center gap-1'>
                 <Clock className='w-4 h-4 text-yellow-400' />
                 <span className='font-medium'>
-                  {formatTime(match.startTime)}
+                  {formatTime(match.matchTime)}
                 </span>
               </div>
               <div className='flex items-center gap-1'>
                 <span className='font-medium'>
-                  {formatDate(match.startTime)}
+                  {formatDate(match.matchTime)}
                 </span>
               </div>
             </div>
@@ -198,7 +233,13 @@ export const MatchCard = memo(({ match, isNew, isRemoved }: MatchCardProps) => {
           </div>
 
           {/* Hover hint at bottom */}
-          <div className='mt-4 pt-2 border-t border-gray-600'>
+          <div
+            className='mt-4 pt-2 border-t border-gray-600'
+            onMouseEnter={() => {
+              setIsInHeader(false);
+              setIsHovered(true);
+            }}
+          >
             <div className='text-center text-xs text-gray-400 group-hover:text-yellow-400 transition-colors duration-300'>
               💡 Hover to flip for betting odds
             </div>
@@ -208,11 +249,11 @@ export const MatchCard = memo(({ match, isNew, isRemoved }: MatchCardProps) => {
         {/* Back of card - Betting Odds */}
         <div
           className={clsx(
-            'absolute inset-0 w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl border-2 border-yellow-500/50 p-6 shadow-2xl backface-hidden rotate-y-180',
+            'absolute inset-0 w-full h-full bg-linear-to-br from-gray-800 to-gray-900 rounded-xl border-2 border-yellow-500/50 p-6 shadow-2xl backface-hidden rotate-y-180',
             {
-              'border-green-400 bg-gradient-to-br from-green-900/50 to-green-800/50 animate-pulse shadow-green-500/25':
+              'border-green-400 bg-linear-to-br from-green-900/50 to-green-800/50 animate-pulse shadow-green-500/25':
                 isNew,
-              'border-red-400 bg-gradient-to-br from-red-900/50 to-red-800/50 opacity-50':
+              'border-red-400 bg-linear-to-br from-red-900/50 to-red-800/50 opacity-50':
                 isRemoved,
             }
           )}
@@ -226,21 +267,21 @@ export const MatchCard = memo(({ match, isNew, isRemoved }: MatchCardProps) => {
 
           <div className='space-y-4'>
             <div className='grid grid-cols-3 gap-3'>
-              <div className='text-center p-3 bg-gradient-to-br from-blue-900/50 to-blue-800/50 rounded-lg border border-blue-500/30'>
+              <div className='text-center p-3 bg-linear-to-br from-blue-900/50 to-blue-800/50 rounded-lg border border-blue-500/30'>
                 <div className='text-xs text-blue-300 font-medium'>Home</div>
                 <div className='font-bold text-blue-400 text-lg'>2.15</div>
               </div>
-              <div className='text-center p-3 bg-gradient-to-br from-gray-700/50 to-gray-600/50 rounded-lg border border-gray-500/30'>
+              <div className='text-center p-3 bg-linear-to-br from-gray-700/50 to-gray-600/50 rounded-lg border border-gray-500/30'>
                 <div className='text-xs text-gray-300 font-medium'>Draw</div>
                 <div className='font-bold text-gray-300 text-lg'>3.40</div>
               </div>
-              <div className='text-center p-3 bg-gradient-to-br from-green-900/50 to-green-800/50 rounded-lg border border-green-500/30'>
+              <div className='text-center p-3 bg-linear-to-br from-green-900/50 to-green-800/50 rounded-lg border border-green-500/30'>
                 <div className='text-xs text-green-300 font-medium'>Away</div>
                 <div className='font-bold text-green-400 text-lg'>1.85</div>
               </div>
             </div>
 
-            <button className='w-full bg-gradient-to-r hover:cursor-pointer from-yellow-500 via-red-500 to-pink-500 text-white py-3 px-4 rounded-lg font-bold text-lg hover:from-yellow-600 hover:via-red-600 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-yellow-500/25'>
+            <button className='w-full bg-linear-to-br hover:cursor-pointer from-yellow-500 via-red-500 to-pink-500 text-white py-3 px-4 rounded-lg font-bold text-lg hover:from-yellow-600 hover:via-red-600 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-yellow-500/25'>
               🎲 PLACE BET 🎲
             </button>
           </div>

@@ -5,7 +5,7 @@ export interface Match {
   homeScore?: number;
   awayScore?: number;
   status: 'upcoming' | 'live' | 'finished';
-  startTime: string;
+  matchTime: string;
   league: string;
   competition: string;
   venue?: string;
@@ -44,4 +44,22 @@ export interface MatchState {
   clearIndicatorsAt?: number;
   retryAt?: number;
   shouldRetry?: boolean;
+}
+
+export interface MatchCardProps {
+  match: Match;
+  isNew?: boolean;
+  isRemoved?: boolean;
+}
+
+export interface MatchesSectionProps {
+  matches: Match[];
+  newMatches: Set<string>;
+  removedMatches: Set<string>;
+}
+
+export interface MatchFiltersProps {
+  filters: MatchFilters;
+  onFiltersChange: (filters: Partial<MatchFilters>) => void;
+  availableLeagues: string[];
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { Match } from '@/types/match';
+import { Match } from '@/types/match.types';
 import { MatchCard } from './MatchCard';
 import { memo } from 'react';
 

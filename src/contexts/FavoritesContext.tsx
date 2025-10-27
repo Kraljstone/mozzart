@@ -7,7 +7,7 @@ import React, {
   useEffect,
   useCallback,
 } from 'react';
-import { FavoritesState } from '@/types/match';
+import { FavoritesState } from '@/types/match.types';
 
 const FavoritesContext = createContext<FavoritesState | undefined>(undefined);
 
@@ -24,22 +24,21 @@ interface FavoritesProviderProps {
 }
 
 export const FavoritesProvider = ({ children }: FavoritesProviderProps) => {
-  const [favoriteMatches, setFavoriteMatches] = useState<Set<string>>(
-    new Set()
-  );
-
-  // Load favorites from localStorage on mount
-  useEffect(() => {
-    const savedFavorites = localStorage.getItem('mozzart_favorites');
-    if (savedFavorites) {
-      try {
-        const favoritesArray = JSON.parse(savedFavorites);
-        setFavoriteMatches(new Set(favoritesArray));
-      } catch (error) {
-        console.error('Error loading favorites from localStorage:', error);
+  const [favoriteMatches, setFavoriteMatches] = useState<Set<string>>(() => {
+    // Initialize state directly from localStorage
+    if (typeof window !== 'undefined') {
+      const savedFavorites = localStorage.getItem('mozzart_favorites');
+      if (savedFavorites) {
+        try {
+          const favoritesArray = JSON.parse(savedFavorites);
+          return new Set(favoritesArray);
+        } catch (error) {
+          console.error('Error loading favorites from localStorage:', error);
+        }
       }
     }
-  }, []);
+    return new Set();
+  });
 
   // Save favorites to localStorage whenever they change
   useEffect(() => {

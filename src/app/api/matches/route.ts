@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
 
-const API_BASE_URL = 'http://172.235.235.11/api/matches';
-
 export async function GET(request: NextRequest) {
   try {
     // Get the username from query parameters or headers
@@ -17,13 +15,16 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const response = await axios.get(API_BASE_URL, {
-      headers: {
-        username: username,
-        'Content-Type': 'application/json',
-      },
-      timeout: 10000, // 10 second timeout
-    });
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/matches`,
+      {
+        headers: {
+          username: username,
+          'Content-Type': 'application/json',
+        },
+        timeout: 10000,
+      }
+    );
 
     return NextResponse.json(response.data);
   } catch (error: unknown) {
