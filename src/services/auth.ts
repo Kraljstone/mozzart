@@ -82,7 +82,7 @@ export const authService = {
 
     return {
       username,
-      timestamp: savedTime,
+      lastUpdated: savedTime.toString(),
     };
   },
 

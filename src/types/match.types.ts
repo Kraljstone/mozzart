@@ -1,10 +1,18 @@
+import {
+  MatchStatus,
+  SortBy,
+  SortOrder,
+  Timestamped,
+  ChangeHandler,
+} from './base.types';
+
 export interface Match {
   id: string;
   homeTeam: string;
   awayTeam: string;
   homeScore?: number;
   awayScore?: number;
-  status: 'upcoming' | 'live' | 'finished';
+  status: MatchStatus;
   matchTime: string;
   league: string;
   competition: string;
@@ -12,9 +20,8 @@ export interface Match {
   referee?: string;
 }
 
-export interface MatchListResponse {
+export interface MatchListResponse extends Timestamped {
   matches: Match[];
-  lastUpdated: string;
 }
 
 export interface MatchFilters {
@@ -23,24 +30,23 @@ export interface MatchFilters {
   venue?: string;
   search?: string;
   status?: string;
-  sortBy?: 'time' | 'league' | 'alphabetical' | 'result';
-  sortOrder?: 'asc' | 'desc';
+  sortBy?: SortBy;
+  sortOrder?: SortOrder;
   favoritesOnly?: boolean;
 }
 
 export interface FavoritesState {
   favoriteMatches: Set<string>;
-  addFavorite: (matchId: string) => void;
-  removeFavorite: (matchId: string) => void;
+  addFavorite: ChangeHandler;
+  removeFavorite: ChangeHandler;
   isFavorite: (matchId: string) => boolean;
-  toggleFavorite: (matchId: string) => void;
+  toggleFavorite: ChangeHandler;
 }
 
-export interface MatchState {
+export interface MatchState extends Timestamped {
   matches: Match[];
   loading: boolean;
   error: string | null;
-  lastUpdated: string | null;
   newMatches: Set<string>;
   removedMatches: Set<string>;
   clearIndicatorsAt?: number;
@@ -69,15 +75,9 @@ export interface MatchFiltersProps {
   availableStatuses: string[];
 }
 
-export interface DropdownOption {
-  value: string;
-  label: string;
-}
-
-export interface CustomDropdownProps {
-  options: DropdownOption[];
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
-  className?: string;
+export interface VirtualizedMatchListProps {
+  matches: Match[];
+  newMatches: Set<string>;
+  removedMatches: Set<string>;
+  height?: number;
 }

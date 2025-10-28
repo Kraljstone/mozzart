@@ -3,7 +3,7 @@ import {
   ScrollProgressProvider,
   ScrollProgress,
   ScrollProgressContainer,
-} from './ScrollProgress';
+} from '../ui/ScrollProgress';
 import { MatchesSectionProps } from '@/types/match.types';
 
 export const MatchesSection = ({

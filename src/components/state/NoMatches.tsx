@@ -1,6 +1,4 @@
-interface NoMatchesProps {
-  hasError?: boolean;
-}
+import { NoMatchesProps } from '@/types/state.types';
 
 export const NoMatches = ({ hasError = false }: NoMatchesProps) => {
   return (

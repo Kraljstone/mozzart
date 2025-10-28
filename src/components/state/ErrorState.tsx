@@ -1,9 +1,5 @@
 import { AlertCircle } from 'lucide-react';
-
-interface ErrorStateProps {
-  error: string;
-  onRetry: () => void;
-}
+import { ErrorStateProps } from '@/types/state.types';
 
 export const ErrorState = ({ error, onRetry }: ErrorStateProps) => {
   return (

@@ -1,4 +1,5 @@
 import { AxiosResponse } from 'axios';
+import { BaseApiResponse } from './base.types';
 
 export class ApiError extends Error {
   constructor(
@@ -16,3 +17,5 @@ export interface ApiConfig {
   timeout?: number;
   headers?: Record<string, string>;
 }
+
+export type ApiResponse<T = unknown> = BaseApiResponse<T>;

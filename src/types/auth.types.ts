@@ -1,13 +1,11 @@
+import { BaseApiResponse, Timestamped } from './base.types';
+
 export interface LoginCredentials {
   username: string;
 }
 
-export interface LoginResponse {
-  success: boolean;
-  message?: string;
-}
+export type LoginResponse = BaseApiResponse;
 
-export interface AuthUser {
+export interface AuthUser extends Timestamped {
   username: string;
-  timestamp: number;
 }

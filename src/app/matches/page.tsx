@@ -3,12 +3,10 @@
 import { useState, useEffect, useLayoutEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMatches } from '@/hooks/useMatches';
-import { MatchFilters } from '@/components/MatchFilters';
-import { Header } from '@/components/Header';
-import { ErrorState } from '@/components/ErrorState';
-import { LoadingState } from '@/components/LoadingState';
-import { NoMatches } from '@/components/NoMatches';
-import { MatchesSection } from '@/components/MatchesSection';
+import { MatchFilters } from '@/components/filter';
+import { Header } from '@/components/layout';
+import { ErrorState, LoadingState, NoMatches } from '@/components/state';
+import { MatchesSection } from '@/components/match';
 import { FavoritesProvider, useFavorites } from '@/contexts/FavoritesContext';
 import { MatchFilters as FilterType } from '@/types/match.types';
 import { authService } from '@/services/auth';

@@ -12,7 +12,7 @@ export const useMatches = (username: string, filters: MatchFilters = {}) => {
     matches: [],
     loading: true,
     error: null,
-    lastUpdated: null,
+    lastUpdated: '',
     newMatches: new Set(),
     removedMatches: new Set(),
   });

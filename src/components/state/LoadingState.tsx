@@ -1,7 +1,4 @@
-interface LoadingStateProps {
-  message?: string;
-  isUpdating?: boolean;
-}
+import { LoadingStateProps } from '@/types/state.types';
 
 export const LoadingState = ({
   message = '🎰 Loading matches... 🎰',

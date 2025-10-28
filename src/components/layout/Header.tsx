@@ -1,11 +1,5 @@
 import { RefreshCw, LogOut, Wifi, WifiOff } from 'lucide-react';
-
-interface HeaderProps {
-  isConnected: boolean;
-  lastUpdated?: number;
-  onRefresh: () => void;
-  onLogout: () => void;
-}
+import { HeaderProps } from '@/types/layout.types';
 
 export const Header = ({
   isConnected,

@@ -1,32 +1,25 @@
 'use client';
 
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { ReactNode, useEffect, useState } from 'react';
+import { createContext, useContext, useRef, useState, useEffect } from 'react';
 
-interface ScrollProgressProviderProps {
-  children: ReactNode;
-  global?: boolean;
-  direction?: 'horizontal' | 'vertical';
-}
+// Custom hook for hydration-safe mounting
+const useIsMounted = () => {
+  const [isMounted, setIsMounted] = useState(false);
 
-interface ScrollProgressProps {
-  asChild?: boolean;
-  mode?: 'width' | 'height' | 'scaleY' | 'scaleX';
-  className?: string;
-}
+  useEffect(() => {
+    const timer = setTimeout(() => setIsMounted(true), 0);
+    return () => clearTimeout(timer);
+  }, []);
 
-interface ScrollProgressContainerProps {
-  children: ReactNode;
-  asChild?: boolean;
-  className?: string;
-}
-
-// Context for scroll progress
-import { createContext, useContext, useRef } from 'react';
-
-interface ScrollProgressContextType {
-  containerRef: React.RefObject<HTMLElement | null>;
-}
+  return isMounted;
+};
+import {
+  ScrollProgressProviderProps,
+  ScrollProgressProps,
+  ScrollProgressContainerProps,
+  ScrollProgressContextType,
+} from '@/types/scroll-progress.types';
 
 const ScrollProgressContext = createContext<ScrollProgressContextType | null>(
   null
@@ -55,12 +48,7 @@ export const ScrollProgress = ({
   className = '',
 }: ScrollProgressProps) => {
   const context = useContext(ScrollProgressContext);
-  const [isMounted, setIsMounted] = useState(false);
-
-  // Handle hydration with proper timing
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  const isMounted = useIsMounted();
 
   // For global scroll, don't use a target
   // For local scroll, use the container ref
@@ -116,11 +104,7 @@ export const ScrollProgressContainer = ({
   className = '',
 }: ScrollProgressContainerProps) => {
   const context = useContext(ScrollProgressContext);
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  const isMounted = useIsMounted();
 
   if (asChild) {
     return <>{children}</>;

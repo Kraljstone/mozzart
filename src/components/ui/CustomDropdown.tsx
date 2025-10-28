@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { ChevronDown, Check } from 'lucide-react';
 import { clsx } from 'clsx';
-import { CustomDropdownProps, DropdownOption } from '@/types/match.types';
+import { CustomDropdownProps, DropdownOption } from '@/types/ui.types';
 
 export const CustomDropdown = ({
   options,
@@ -64,9 +64,9 @@ export const CustomDropdown = ({
       {isOpen && (
         <div className='absolute z-50 w-full mt-1 bg-gray-700 border border-gray-600 rounded-lg shadow-2xl overflow-hidden'>
           <div className='py-1'>
-            {options.map((option: DropdownOption) => (
+            {options.map((option: DropdownOption, index: number) => (
               <button
-                key={option.value}
+                key={`${option.value}-${index}`}
                 type='button'
                 onClick={() => handleOptionClick(option.value)}
                 className={clsx(

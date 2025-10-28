@@ -1,15 +1,8 @@
 'use client';
 
-import { Match } from '@/types/match.types';
 import { MatchCard } from './MatchCard';
 import { memo } from 'react';
-
-interface VirtualizedMatchListProps {
-  matches: Match[];
-  newMatches: Set<string>;
-  removedMatches: Set<string>;
-  height?: number;
-}
+import { VirtualizedMatchListProps } from '@/types/match.types';
 
 export const VirtualizedMatchList = memo(
   ({
