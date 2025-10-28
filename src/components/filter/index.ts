@@ -1,4 +1,3 @@
-// Filter-related components
 export { FilterDropdown } from './FilterDropdown';
 export { FiltersGrid } from './FiltersGrid';
 export { MatchFilters } from './MatchFilters';

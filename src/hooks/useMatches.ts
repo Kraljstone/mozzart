@@ -17,7 +17,6 @@ export const useMatches = (username: string, filters: MatchFilters = {}) => {
     removedMatches: new Set(),
   });
 
-  // Handle clearing indicators without setTimeout
   useEffect(() => {
     if (state.clearIndicatorsAt) {
       const now = Date.now();
@@ -159,7 +158,6 @@ export const useMatches = (username: string, filters: MatchFilters = {}) => {
       });
 
       // Clear new/removed match indicators after 1 second
-      // Use a state-based approach with useEffect
       setState((prev) => ({
         ...prev,
         clearIndicatorsAt: Date.now() + 1000,
@@ -175,7 +173,6 @@ export const useMatches = (username: string, filters: MatchFilters = {}) => {
         error: error instanceof Error ? error.message : 'Unknown error',
       }));
 
-      // Implement retry mechanism without setTimeout
       if (retryCountRef.current < maxRetries) {
         retryCountRef.current++;
         const retryDelay = Math.pow(2, retryCountRef.current) * 1000;

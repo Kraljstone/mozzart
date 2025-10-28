@@ -31,8 +31,6 @@ export const MatchCardHeader = ({
   league,
   status,
   matchId,
-  isNew,
-  isRemoved,
   onMouseEnter,
   onMouseLeave,
 }: MatchCardHeaderProps) => {

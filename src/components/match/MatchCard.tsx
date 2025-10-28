@@ -13,7 +13,6 @@ export const MatchCard = memo(({ match, isNew, isRemoved }: MatchCardProps) => {
 
   const handleHeaderMouseEnter = () => {
     setIsInHeader(true);
-    // Clear timeout to prevent flip
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current);
     }
@@ -48,7 +47,6 @@ export const MatchCard = memo(({ match, isNew, isRemoved }: MatchCardProps) => {
         }
       }}
       onMouseLeave={() => {
-        // Clear timeout and immediately hide
         if (hoverTimeoutRef.current) {
           clearTimeout(hoverTimeoutRef.current);
         }
